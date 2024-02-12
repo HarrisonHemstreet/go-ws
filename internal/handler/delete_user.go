@@ -5,20 +5,16 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/HarrisonHemstreet/go-ws/internal/database"
+	"github.com/HarrisonHemstreet/go-ws/internal/service"
 )
 
-// CombinedDeleteUserByIDHandler handles the HTTP request for deleting a user by their ID and deletes the user from the database
+// DeleteUserByID handles the HTTP request for deleting a user by their ID
 func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
-	db := database.InitDB()
-	defer db.Close()
-	// Only allow DELETE requests
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Only DELETE requests are allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Assuming the user ID is passed as a URL parameter, e.g., /deleteuserbyid?userid=1
 	keys, ok := r.URL.Query()["id"]
 	if !ok || len(keys[0]) < 1 {
 		http.Error(w, "User ID must be provided as a query parameter", http.StatusBadRequest)
@@ -31,25 +27,16 @@ func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Execute the DELETE statement to delete the user from the database
-	statement := `DELETE FROM users WHERE id = $1`
-	result, err := db.Exec(statement, userID)
+	err = service.DeleteUserByID(userID)
 	if err != nil {
+		if err == service.ErrUserNotFound {
+			http.Error(w, fmt.Sprintf("No user found with ID %d", userID), http.StatusNotFound)
+			return
+		}
 		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
 		return
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
-		return
-	}
-	if rowsAffected == 0 {
-		http.Error(w, fmt.Sprintf("No user found with ID %d", userID), http.StatusNotFound)
-		return
-	}
-
-	// Respond to the client
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "User with ID %d deleted successfully", userID)
 }

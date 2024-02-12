@@ -2,14 +2,13 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/HarrisonHemstreet/go-ws/internal/database"
 	"github.com/HarrisonHemstreet/go-ws/internal/model"
 )
 
-// insertUserHandler handles the HTTP request for inserting a new user
+// InsertUser handles the HTTP request for inserting a new user
 func InsertUser(w http.ResponseWriter, r *http.Request) {
 	db := database.InitDB()
 	defer db.Close()
@@ -27,15 +26,17 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Insert the user into the database
-	statement := `INSERT INTO users (username, email) VALUES ($1, $2)`
-	_, insert_err := db.Exec(statement, user.Username, user.Email)
-	if insert_err != nil {
+	// Insert the user into the database and return the inserted user
+	statement := `INSERT INTO users (username, email) VALUES ($1, $2) RETURNING id, username, email`
+	// Assuming the database setup includes an auto-generated ID for the users table
+	err = db.QueryRow(statement, user.Username, user.Email).Scan(&user.ID, &user.Username, &user.Email)
+	if err != nil {
 		http.Error(w, "Failed to insert user", http.StatusInternalServerError)
 		return
 	}
 
-	// Respond to the client
+	// Respond to the client with the inserted user
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "User inserted successfully")
+	json.NewEncoder(w).Encode(user)
 }
