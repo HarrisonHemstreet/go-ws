@@ -9,8 +9,7 @@ import (
 )
 
 func main() {
-	// Example usage of `registerRoute` for your routes
-	utils.RegisterRoute("/", handler.HelloWorld) // Assuming HelloWorldHandler matches the expected signature
+	utils.RegisterRoute("/", handler.HelloWorld)
 	utils.RegisterRoute("/insertuser", handler.InsertUser)
 	utils.RegisterRoute("/fetchuserbyid", handler.FetchUserByID)
 	utils.RegisterRoute("/deleteuserbyid", handler.DeleteUserByID)
