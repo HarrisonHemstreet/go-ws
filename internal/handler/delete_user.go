@@ -1,14 +1,17 @@
 package handler
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
+
+	"github.com/HarrisonHemstreet/go-ws/internal/database"
 )
 
 // CombinedDeleteUserByIDHandler handles the HTTP request for deleting a user by their ID and deletes the user from the database
-func DeleteUserByID(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
+	db := database.InitDB()
+	defer db.Close()
 	// Only allow DELETE requests
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Only DELETE requests are allowed", http.StatusMethodNotAllowed)

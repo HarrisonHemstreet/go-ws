@@ -1,17 +1,19 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/HarrisonHemstreet/go-ws/internal/database"
 	"github.com/HarrisonHemstreet/go-ws/internal/model"
 )
 
 // CombinedUpdateUserByIDHandler handles the HTTP request for updating a user by their ID and updates the user details in the database
-func UpdateUserByID(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
+	db := database.InitDB()
+	defer db.Close()
 	// Only allow PUT requests
 	if r.Method != http.MethodPut {
 		http.Error(w, "Only PUT requests are allowed", http.StatusMethodNotAllowed)

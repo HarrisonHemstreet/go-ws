@@ -7,11 +7,14 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/HarrisonHemstreet/go-ws/internal/database"
 	"github.com/HarrisonHemstreet/go-ws/internal/model"
 )
 
 // CombinedFetchUserByIDHandler handles the HTTP request for fetching a user by their ID and fetches the user from the database
-func FetchUserByID(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func FetchUserByID(w http.ResponseWriter, r *http.Request) {
+	db := database.InitDB()
+	defer db.Close()
 	// Only allow GET requests
 	if r.Method != http.MethodGet {
 		http.Error(w, "Only GET requests are allowed", http.StatusMethodNotAllowed)

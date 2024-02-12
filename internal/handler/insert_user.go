@@ -1,16 +1,18 @@
 package handler
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
+	"github.com/HarrisonHemstreet/go-ws/internal/database"
 	"github.com/HarrisonHemstreet/go-ws/internal/model"
 )
 
 // insertUserHandler handles the HTTP request for inserting a new user
-func InsertUser(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func InsertUser(w http.ResponseWriter, r *http.Request) {
+	db := database.InitDB()
+	defer db.Close()
 	// Only allow POST requests
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST requests are allowed", http.StatusMethodNotAllowed)
