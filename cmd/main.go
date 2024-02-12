@@ -24,7 +24,7 @@ func main() {
 		handler.InsertUser(db, w, r)
 	})
 	http.HandleFunc("/fetchuserbyid", func(w http.ResponseWriter, r *http.Request) {
-		FetchUserByIDHandler(db, w, r)
+		handler.FetchUserByID(db, w, r)
 	})
 	http.HandleFunc("/deleteuserbyid", func(w http.ResponseWriter, r *http.Request) {
 		DeleteUserByIDHandler(db, w, r)
@@ -38,66 +38,6 @@ func main() {
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 	}
-}
-
-// FetchUserByID fetches a user from the database by user_id
-func FetchUserByID(db *sql.DB, ID int) (model.User, error) {
-	var u model.User
-	// Adjust the SELECT statement to match your database schema
-	err := db.QueryRow("SELECT id, username, email FROM users WHERE id = $1", ID).Scan(&u.ID, &u.Username, &u.Email)
-	if err != nil {
-		fmt.Println(err)
-		if err == sql.ErrNoRows {
-			return model.User{}, fmt.Errorf("user not found")
-		}
-		return model.User{}, err
-	}
-
-	return u, nil
-}
-
-// FetchUserByIDHandler handles the HTTP request for fetching a user by their ID
-func FetchUserByIDHandler(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-	// Only allow GET requests
-	if r.Method != http.MethodGet {
-		http.Error(w, "Only GET requests are allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	// Assuming the user ID is passed as a URL parameter, e.g., /fetchuserbyid?id=1
-	keys, ok := r.URL.Query()["id"]
-	if !ok || len(keys[0]) < 1 {
-		http.Error(w, "User ID must be provided as a query parameter", http.StatusBadRequest)
-		return
-	}
-
-	ID, err := strconv.Atoi(keys[0])
-	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
-		return
-	}
-
-	user, err := FetchUserByID(db, ID)
-	if err != nil {
-		if err.Error() == "user not found" {
-			http.Error(w, err.Error(), http.StatusNotFound)
-		} else {
-			http.Error(w, "Failed to fetch user", http.StatusInternalServerError)
-		}
-		return
-	}
-
-	// Marshal the User struct to JSON
-	jsonResponse, err := json.Marshal(user)
-	if err != nil {
-		http.Error(w, "Error converting user data to JSON", http.StatusInternalServerError)
-		return
-	}
-
-	// Write the JSON response
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonResponse)
 }
 
 // DeleteUserByID deletes a user from the database by user_id
