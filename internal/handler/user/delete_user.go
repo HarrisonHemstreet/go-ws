@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/HarrisonHemstreet/go-ws/internal/service"
+	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
 // DeleteUserByID handles the HTTP request for deleting a user by their ID
