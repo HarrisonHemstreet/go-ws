@@ -1,4 +1,4 @@
-package service
+package user
 
 import (
 	"github.com/HarrisonHemstreet/go-ws/internal/database"
