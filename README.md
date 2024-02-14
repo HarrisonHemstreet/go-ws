@@ -16,12 +16,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:HarrisonHemstreet/go-web-service-template.git
    ```
 
 2. **Navigate to the project directory**
    ```bash
-   cd <project-directory>
+   cd go-web-service-template
    ```
 
 3. **Start the PostgreSQL database with Docker Compose**
