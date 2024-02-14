@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
+	"github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -20,10 +20,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Authenticate the user
-	tokenString, err := service.AuthenticateUser(credentials.Username, credentials.Password)
+	tokenString, err := user.AuthenticateUser(credentials.Username, credentials.Password)
 	if err != nil {
-		// Authentication failed
-		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+		HandleRouteError(w, err)
 		return
 	}
 

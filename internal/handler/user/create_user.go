@@ -1,11 +1,11 @@
-package handler
+package user
 
 import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/HarrisonHemstreet/go-ws/internal/handler"
 	"github.com/HarrisonHemstreet/go-ws/internal/model"
-	"github.com/HarrisonHemstreet/go-ws/internal/service"
 	userService "github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
@@ -24,7 +24,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	insertedUser, err := userService.InsertUser(user)
 	if err != nil {
-		service.HandleRouteError(w, err)
+		handler.HandleRouteError(w, err)
 		return
 	}
 
