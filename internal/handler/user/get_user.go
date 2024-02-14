@@ -1,11 +1,11 @@
 package user
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
 
+	"github.com/HarrisonHemstreet/go-ws/internal/handler"
 	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
@@ -29,11 +29,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	user, err := service.FetchUserByID(ID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "User not found", http.StatusNotFound)
-		} else {
-			http.Error(w, "Failed to fetch user", http.StatusInternalServerError)
-		}
+		handler.HandleRouteError(w, r.URL.Path, err)
 		return
 	}
 
