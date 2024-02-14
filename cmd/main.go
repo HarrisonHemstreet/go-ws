@@ -11,7 +11,6 @@ import (
 func main() {
 	mainMux := http.NewServeMux()
 
-	// Example usage: Set up different routes
 	utils.RegisterRoutes(mainMux, "/user", userHandler.UserRouter, []string{"POST"})
 	utils.RegisterRoutes(mainMux, "/login", handler.Login, []string{"POST"})
 
