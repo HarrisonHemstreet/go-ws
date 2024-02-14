@@ -3,25 +3,20 @@ package main
 import (
 	"net/http"
 
-	handler "github.com/HarrisonHemstreet/go-ws/internal/handler"
+	"github.com/HarrisonHemstreet/go-ws/internal/handler"
 	userHandler "github.com/HarrisonHemstreet/go-ws/internal/handler/user"
-	"github.com/HarrisonHemstreet/go-ws/internal/middleware/jwt"
+	"github.com/HarrisonHemstreet/go-ws/internal/utils"
 )
 
 func main() {
-	protectedMux := http.NewServeMux()
-	protectedMux.HandleFunc("/user", userHandler.UserRouter)
-	/* EXAMPLE FOR NEW PROTECTED ROUTES:
-	  // New: Register additional protected routes on the protected sub-mux
-		protectedMux.HandleFunc("/user/profile", userHandler.ProfileHandler)
-		protectedMux.HandleFunc("/posts", postsHandler.PostsHandler)
-	*/
-	jwtProtected := jwt.ValidateToken(protectedMux, []string{"POST"})
-	http.Handle("/user", jwtProtected) // Note the trailing slash to cover all subpaths
-	http.HandleFunc("/login", handler.Login)
+	mainMux := http.NewServeMux()
+
+	// Example usage: Set up different routes
+	utils.RegisterRoutes(mainMux, "/user", userHandler.UserRouter, []string{"POST"})
+	utils.RegisterRoutes(mainMux, "/login", handler.Login, []string{"POST"})
 
 	// Start the HTTP server
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8080", mainMux); err != nil {
 		panic(err)
 	}
 }
