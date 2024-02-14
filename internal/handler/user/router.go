@@ -7,9 +7,9 @@ import (
 func UserRouter(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		FetchUserByID(w, r)
+		GetUser(w, r)
 	case http.MethodPost:
-		InsertUser(w, r)
+		CreateUser(w, r)
 	case http.MethodPut:
 		UpdateUserByID(w, r)
 	case http.MethodDelete:

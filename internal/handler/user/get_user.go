@@ -9,7 +9,7 @@ import (
 	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
-func FetchUserByID(w http.ResponseWriter, r *http.Request) {
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Only GET requests are allowed", http.StatusMethodNotAllowed)
 		return

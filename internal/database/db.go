@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -25,6 +24,5 @@ func InitDB() *sql.DB {
 		log.Fatalf("Error pinging the database: %v", err)
 	}
 
-	fmt.Println("Successfully connected to the database!")
 	return db
 }

@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
-	"github.com/HarrisonHemstreet/go-ws/internal/utils/jwt"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -21,18 +20,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Authenticate the user
-	if service.AuthenticateUser(credentials.Username, credentials.Password) {
-		// Generate a token
-		tokenString, err := jwt.CreateToken(credentials.Username)
-		if err != nil {
-			http.Error(w, "Failed to generate token", http.StatusInternalServerError)
-			return
-		}
-
-		// Respond with the token
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"token": tokenString})
-	} else {
+	tokenString, err := service.AuthenticateUser(credentials.Username, credentials.Password)
+	if err != nil {
+		// Authentication failed
 		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+		return
 	}
+
+	// Respond with the token if authentication is successful
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"token": tokenString})
 }

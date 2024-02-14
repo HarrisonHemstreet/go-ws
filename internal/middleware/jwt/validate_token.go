@@ -11,11 +11,16 @@ import (
 )
 
 // MiddlewareValidateToken validates the JWT token.
-func ValidateToken(next http.Handler) http.Handler {
+func ValidateToken(next http.Handler, unprotectedMethods []string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if unprotected(unprotectedMethods, r.Method) {
+			next.ServeHTTP(w, r) // Skip JWT validation
+			return
+		}
+
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
-			http.Error(w, "Malformed token", http.StatusBadRequest)
+			http.Error(w, "Malformed token", http.StatusUnauthorized)
 			return
 		}
 
@@ -43,4 +48,13 @@ func ValidateToken(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "username", claims.Username)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func unprotected(unprotectedMethods []string, incomingMethod string) bool {
+	for _, unprotectedMethod := range unprotectedMethods {
+		if strings.EqualFold(unprotectedMethod, incomingMethod) {
+			return true
+		}
+	}
+	return false
 }

@@ -5,11 +5,12 @@ import (
 	"net/http"
 
 	"github.com/HarrisonHemstreet/go-ws/internal/model"
-	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
+	"github.com/HarrisonHemstreet/go-ws/internal/service"
+	userService "github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
 // InsertUser handles the HTTP request for inserting a new user.
-func InsertUser(w http.ResponseWriter, r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST requests are allowed", http.StatusMethodNotAllowed)
 		return
@@ -21,9 +22,9 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	insertedUser, err := service.InsertUser(user)
+	insertedUser, err := userService.InsertUser(user)
 	if err != nil {
-		http.Error(w, "Failed to insert user", http.StatusInternalServerError)
+		service.HandleRouteError(w, err)
 		return
 	}
 

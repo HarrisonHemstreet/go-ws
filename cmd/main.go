@@ -16,7 +16,7 @@ func main() {
 		protectedMux.HandleFunc("/user/profile", userHandler.ProfileHandler)
 		protectedMux.HandleFunc("/posts", postsHandler.PostsHandler)
 	*/
-	jwtProtected := jwt.ValidateToken(protectedMux)
+	jwtProtected := jwt.ValidateToken(protectedMux, []string{"POST"})
 	http.Handle("/user", jwtProtected) // Note the trailing slash to cover all subpaths
 	http.HandleFunc("/login", handler.Login)
 
