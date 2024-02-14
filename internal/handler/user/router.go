@@ -11,9 +11,9 @@ func UserRouter(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		CreateUser(w, r)
 	case http.MethodPut:
-		UpdateUserByID(w, r)
+		UpdateUser(w, r)
 	case http.MethodDelete:
-		DeleteUserByID(w, r)
+		DeleteUser(w, r)
 	default:
 		http.Error(w, "Unsupported HTTP method", http.StatusMethodNotAllowed)
 	}

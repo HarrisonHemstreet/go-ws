@@ -24,7 +24,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	insertedUser, err := userService.InsertUser(user)
 	if err != nil {
-		handler.HandleRouteError(w, err)
+		handler.HandleRouteError(w, r.URL.Path, err)
 		return
 	}
 

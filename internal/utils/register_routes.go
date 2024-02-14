@@ -12,7 +12,7 @@ func RegisterRoutes(mainMux *http.ServeMux, pathPrefix string, specificHandler h
 	subMux.HandleFunc("/", specificHandler) // Root of the sub-path, expects paths relative to the prefix
 
 	// Apply JWT middleware, excluding specified methods
-	jwtProtected := jwt.ValidateToken(subMux, unprotectedMethods)
+	jwtProtected := jwt.ValidateToken(subMux)
 
 	// No need to strip prefix here as we're directly associating jwtProtected with the correct pathPrefix
 	mainMux.Handle(pathPrefix, jwtProtected)

@@ -22,7 +22,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Authenticate the user
 	tokenString, err := user.AuthenticateUser(credentials.Username, credentials.Password)
 	if err != nil {
-		HandleRouteError(w, err)
+		HandleRouteError(w, r.URL.Path, err)
 		return
 	}
 

@@ -1,7 +1,11 @@
 package model
 
+import "time"
+
 type ErrorResponse struct {
-	ErrorMessage string `json:"error_message"`
-	ErrorCode    string `json:"error_code"` // Optional, for client-side handling
-	StatusCode   int    `json:"status_code"`
+	Timestamp    time.Time `json:"timestamp"`
+	ErrorMessage string    `json:"error_message"`
+	ErrorCode    string    `json:"error_code"`
+	Path         string    `json:"path"`
+	StatusCode   int       `json:"status_code"`
 }

@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/HarrisonHemstreet/go-ws/internal/handler"
 	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
 // DeleteUserByID handles the HTTP request for deleting a user by their ID
-func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Only DELETE requests are allowed", http.StatusMethodNotAllowed)
 		return
@@ -29,11 +30,7 @@ func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
 
 	err = service.DeleteUserByID(userID)
 	if err != nil {
-		if err == service.ErrUserNotFound {
-			http.Error(w, fmt.Sprintf("No user found with ID %d", userID), http.StatusNotFound)
-			return
-		}
-		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
+		handler.HandleRouteError(w, r.URL.Path, err)
 		return
 	}
 

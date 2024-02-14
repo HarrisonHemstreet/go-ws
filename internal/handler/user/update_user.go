@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/HarrisonHemstreet/go-ws/internal/handler"
 	"github.com/HarrisonHemstreet/go-ws/internal/model"
 	service "github.com/HarrisonHemstreet/go-ws/internal/service/user"
 )
 
 // UpdateUserByID handles the HTTP request for updating a user by their ID.
-func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Only PUT requests are allowed", http.StatusMethodNotAllowed)
 		return
@@ -37,7 +38,7 @@ func UpdateUserByID(w http.ResponseWriter, r *http.Request) {
 
 	err = service.UpdateUser(userID, user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		handler.HandleRouteError(w, r.URL.Path, err)
 		return
 	}
 
