@@ -44,8 +44,14 @@ func ValidateToken(next http.Handler, unprotectedMethods []string) http.Handler 
 			return
 		}
 
+		// Define a type for the context key to avoid collisions
+		type contextKey string
+
+		// Define a value for the context key
+		const usernameKey contextKey = "username"
+
 		// Token is valid, put the username in the context
-		ctx := context.WithValue(r.Context(), "username", claims.Username)
+		ctx := context.WithValue(r.Context(), usernameKey, claims.Username)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
