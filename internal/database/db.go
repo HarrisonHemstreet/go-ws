@@ -12,14 +12,15 @@ import (
 // InitializeDB creates a connection to the PostgreSQL database and returns the *sql.DB object.
 func InitDB() *sql.DB {
 	// Retrieve database connection details from environment variables
-	host := os.Getenv("DATABASE_HOST") // Use "postgres" as the service name in Docker
-	port := os.Getenv("DB_PORT")       // Default to "5432" if not specified
-	user := os.Getenv("POSTGRES_USER") // Default "root"
-	password := os.Getenv("POSTGRES_PASSWORD")
-	dbname := os.Getenv("POSTGRES_DB")
+	host := getEnv("DATABASE_HOST", "127.0.0.1")
+	port := getEnv("DB_PORT", "5440")
+	user := getEnv("POSTGRES_USER", "root")
+	password := getEnv("POSTGRES_PASSWORD", "root")
+	dbname := getEnv("POSTGRES_DB", "postgres")
 
 	// Construct the connection string using environment variables
 	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable", user, dbname, password, host, port)
+	fmt.Println("connStr: ", connStr)
 
 	// Open a database connection
 	db, err := sql.Open("postgres", connStr)
@@ -34,4 +35,14 @@ func InitDB() *sql.DB {
 	}
 
 	return db
+}
+
+// getEnv retrieves the value of the environment variable named by the key
+// or returns the default value if the variable is not set.
+func getEnv(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	return value
 }
