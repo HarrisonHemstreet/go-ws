@@ -2,15 +2,24 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 )
 
 // InitializeDB creates a connection to the PostgreSQL database and returns the *sql.DB object.
 func InitDB() *sql.DB {
-	// Database connection string
-	connStr := "user=root dbname=root password=root host=127.0.0.1 port=5440 sslmode=disable"
+	// Retrieve database connection details from environment variables
+	host := os.Getenv("DATABASE_HOST") // Use "postgres" as the service name in Docker
+	port := os.Getenv("DB_PORT")       // Default to "5432" if not specified
+	user := os.Getenv("POSTGRES_USER") // Default "root"
+	password := os.Getenv("POSTGRES_PASSWORD")
+	dbname := os.Getenv("POSTGRES_DB")
+
+	// Construct the connection string using environment variables
+	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable", user, dbname, password, host, port)
 
 	// Open a database connection
 	db, err := sql.Open("postgres", connStr)

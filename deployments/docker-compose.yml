@@ -1,27 +1,41 @@
 version: '3.6'
-services: 
-    postgres:
-        image: postgres
-        restart: always
-        environment: 
-            - DATABASE_HOST=127.0.0.1
-            - POSTGRES_USER=root
-            - POSTGRES_PASSWORD=root
-            - POSTGRES_DB=root  
 
-        ports: 
-            - "5440:5432"
-        volumes: 
-            - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
-    
-    pgadmin-compose:
-        image: dpage/pgadmin4
-        environment: 
-            PGADMIN_DEFAULT_EMAIL: "test@test.com"
-            PGADMIN_DEFAULT_PASSWORD: "test"
-        ports: 
-            - "16543:80"
-        depends_on: 
-            - postgres
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+    ports:
+      - "5440:5432"
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "test@test.com"
+      PGADMIN_DEFAULT_PASSWORD: "test"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+
+  go-web-service:
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_HOST: postgres
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+      DB_PORT: 5432
+    depends_on:
+      - postgres
 # run ifconfig | grep inet
 # to get your hostname for pgadmin when connecting to your db
