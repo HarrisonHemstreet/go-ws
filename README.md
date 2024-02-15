@@ -7,7 +7,7 @@ This Go project is structured as a RESTful API service designed to handle user m
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
-- Go 1.21.6
+- Go 1.22.0
 - Docker and Docker Compose
 - PostgreSQL (setup via Docker Compose)
 - PgAdmin4 (setup via Docker Compose)
