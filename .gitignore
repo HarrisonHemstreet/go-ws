@@ -19,8 +19,8 @@
 # /vendor/
 
 # Dependency files
-Gopkg.lock
-go.sum
+# Gopkg.lock
+# go.sum
 
 # Project-specific environment variables
 .env
