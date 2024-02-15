@@ -22,6 +22,7 @@ func main() {
 
 	// Login
 	mux.HandleFunc("POST /api/v1/login", handler.Login)
+	// test
 
 	// User routes
 	userRoutes := http.NewServeMux()
