@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -13,11 +12,6 @@ import (
 
 // UpdateUserByID handles the HTTP request for updating a user by their ID.
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
-		http.Error(w, "Only PUT requests are allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	keys, ok := r.URL.Query()["id"]
 	if !ok || len(keys[0]) < 1 {
 		http.Error(w, "User ID must be provided as a query parameter", http.StatusBadRequest)
@@ -36,12 +30,18 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = service.UpdateUser(userID, user)
+	userUpdated, err := service.UpdateUser(userID, user)
 	if err != nil {
 		handler.HandleRouteError(w, r.URL.Path, err)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "User with ID %d updated successfully", userID)
+	userBytes, err := json.Marshal(userUpdated)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write(userBytes)
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,11 +9,11 @@ import (
 	"time"
 
 	"github.com/HarrisonHemstreet/go-ws/internal/router"
+	"github.com/HarrisonHemstreet/go-ws/internal/utils"
 )
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{}))
-	mux := router.Router(*logger)
+	mux := router.Router(*utils.Logger)
 
 	// Initialize server with ability to shutdown gracefully
 	server := &http.Server{
@@ -28,21 +27,21 @@ func main() {
 
 	go func() {
 		<-stopChan // wait for interrupt signal
-		logger.Info("Shutting down server...")
+		utils.Logger.Info("Shutting down server...")
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			logger.Error("Shutdown error", "error", err)
+			utils.Logger.Error("Shutdown error", "error", err)
 		} else {
-			logger.Info("Server gracefully stopped")
+			utils.Logger.Info("Server gracefully stopped")
 		}
 	}()
 
 	// Start the HTTP server
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		logger.Error("Server failed to start", "error", err)
+		utils.Logger.Error("Server failed to start", "error", err)
 		panic(err)
 	}
 }
