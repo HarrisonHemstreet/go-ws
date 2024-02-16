@@ -20,7 +20,6 @@ func InitDB() *sql.DB {
 
 	// Construct the connection string using environment variables
 	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable", user, dbname, password, host, port)
-	fmt.Println("connStr: ", connStr)
 
 	// Open a database connection
 	db, err := sql.Open("postgres", connStr)
