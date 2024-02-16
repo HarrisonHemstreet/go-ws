@@ -19,5 +19,10 @@
            <li><strong>Hi:</strong> world</li>
         {{ end }}
     </ul>
+    <ul>
+      {{ range .PartnerVendors }}
+        <li>{{ .Name }}: {{ .Description }}</li>
+      {{ end }}
+    </ul>
 </body>
 </html>
