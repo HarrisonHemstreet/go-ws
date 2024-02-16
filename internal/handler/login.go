@@ -15,7 +15,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&credentials)
 	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		RouteError(w, r.URL.Path, "Invalid request body", "bad_token", http.StatusUnauthorized)
 		return
 	}
 

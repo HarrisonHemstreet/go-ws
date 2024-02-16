@@ -1,6 +1,7 @@
 package user
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/HarrisonHemstreet/go-ws/internal/database"
@@ -8,23 +9,18 @@ import (
 )
 
 // UpdateUser updates a user's details in the database by their ID.
-func UpdateUser(userID int, user model.User) error {
+func UpdateUser(userID int, user model.User) (model.User, error) {
 	db := database.InitDB()
 	defer db.Close()
 
-	statement := `UPDATE users SET username = $2, email = $3 WHERE id = $1`
-	result, err := db.Exec(statement, userID, user.Username, user.Email)
+	statement := `UPDATE users SET username = $2, email = $3 WHERE id = $1 RETURNING id, username, email`
+	err := db.QueryRow(statement, userID, user.Username, user.Email).Scan(&user.ID, &user.Username, &user.Email)
 	if err != nil {
-		return fmt.Errorf("failed to update user: %w", err)
+		if err == sql.ErrNoRows {
+			return model.User{}, fmt.Errorf("update unsuccessful")
+		}
+		return model.User{}, err
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("error checking affected rows: %w", err)
-	}
-	if rowsAffected == 0 {
-		return fmt.Errorf("no user found with ID %d", userID)
-	}
-
-	return nil
+	return user, nil
 }

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -11,20 +10,15 @@ import (
 
 // DeleteUserByID handles the HTTP request for deleting a user by their ID
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodDelete {
-		http.Error(w, "Only DELETE requests are allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	keys, ok := r.URL.Query()["id"]
 	if !ok || len(keys[0]) < 1 {
-		http.Error(w, "User ID must be provided as a query parameter", http.StatusBadRequest)
+		handler.RouteError(w, r.URL.Path, "User ID must be provided as a query parameter", "missing_user_id", http.StatusBadRequest)
 		return
 	}
 
 	userID, err := strconv.Atoi(keys[0])
 	if err != nil {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		handler.RouteError(w, r.URL.Path, "Invalid user ID", "missing_user_id", http.StatusBadRequest)
 		return
 	}
 
@@ -34,6 +28,5 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "User with ID %d deleted successfully", userID)
+	w.WriteHeader(http.StatusNoContent)
 }
