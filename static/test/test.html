@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMX and Go Example</title>
+    <script version="1.9.10" src="../htmx.min.js"></script>
+    <script version="3.4.1" src="../tailwind.min.js"></script>
+</head>
+<body>
+    <h1>Hello, HTMX and Go!</h1>
+    <div hx-get="/update-content" hx-trigger="click" class="update-button" style="cursor: pointer; color: blue;">
+        Click me to update content via HTMX!
+    </div>
+    <div id="content">
+        <!-- Content updated by HTMX will go here -->
+    </div>
+</body>
+</html>
